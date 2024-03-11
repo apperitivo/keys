@@ -6,7 +6,6 @@ import (
 	"os"
 	"sync"
 
-	"github.com/apperitivo/log"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 )
@@ -14,7 +13,7 @@ import (
 var key JwtSigningKey
 var m sync.Mutex = sync.Mutex{}
 var o sync.Once = sync.Once{}
-var l *zap.Logger = log.NewLogger("secure")
+var l *zap.Logger = zap.L().Named("keys")
 
 func InitFromPath(privPath, pubPath string) error {
 	privB, err := os.ReadFile(privPath)
@@ -43,7 +42,7 @@ func Init(privKey []byte, pubKey []byte) error {
 	m.Lock()
 	defer m.Unlock()
 
-	l.Info("parsing keys", zap.ByteString("priv", privKey), zap.ByteString("pub", pubKey))
+	l.Debug("parsing keys", zap.ByteString("priv", privKey), zap.ByteString("pub", pubKey))
 
 	// var decodedKey []byte = make([]byte, len(privKey))
 	// var decodedPub []byte = make([]byte, len(pubKey))
